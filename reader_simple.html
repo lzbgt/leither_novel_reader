@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="css/base.css" rel="stylesheet" type="text/css" />
+<link href="css/master.css" rel="stylesheet" type="text/css" />
+<link href="css/addition.css" rel="stylesheet" type="text/css" />
+<script src="leitherapi.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.jtabs.js"></script>
+<script src="js/easydialog.min.js"></script>
+<script src="js/jquery.colorbox.js"></script>
+<script src="js/jquery.lazyload.js"></script>
+<script src='./reader.js'></script>
+</head>
+
+<body style="background:#e5e4db;" ng-app="nrApp" ng-controller="nrCtrl">
+<div class="novel">
+  <div class="novel-nav">
+    <div class="novel-title">{{title}}</div>
+	<div class="f14 c-999 mt4">小说：{{novelName}}&nbsp;&nbsp;&nbsp;作者：{{author}}&nbsp;&nbsp;&nbsp;更新时间：{{updateTime}}</div>
+  </div>
+      <div class="novel-info" ng-bind-html="novelBody"></div>
+  </div>
+</div>
+</body>
+</html>
+

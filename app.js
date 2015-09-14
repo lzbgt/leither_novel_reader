@@ -1,5 +1,6 @@
 //app
 var NOVEL_CHAPTER_FIELDS = ["chapName", "novelName", "author", "timestamp", "body"];
+
 function main() {
     debug.log("reader main run", G.appBid);
     addcss = function(css) {
@@ -24,7 +25,6 @@ function startup() {
         bid = (G.I.nodeBid == null ? "b-wQj4w86l5XnlKBPVUtO09RxlsjsyiWETD4TnqoHzw" : G.I.nodeBid);
 
         key = (G.I.novelKey == null ? "1441869599669" : G.I.novelKey)
-
         loadNovelContent(bid, key, $scope, $sce);
     })
 }
@@ -43,7 +43,7 @@ function loadNovelContent(bid, key, $scope, $sce) {
                     $scope[NOVEL_CHAPTER_FIELDS[i]] = data[i];
                 }
             }
-            document.title = $scope.novelName + "  " + $scope.chapName; 
+            document.title = $scope.novelName + "  " + $scope.chapName;
             $scope.$apply();
         },
         function(e) {
@@ -94,7 +94,7 @@ function _hmget() {
 
 function stringFromTimeStamp(ts) {
     var date = new Date(ts * 1000);
-    var d = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    var d = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     var hours = date.getHours();
     var minutes = "0" + date.getMinutes();
     var seconds = "0" + date.getSeconds();

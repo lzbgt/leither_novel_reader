@@ -8,44 +8,50 @@ var api = (function () {
                 ip = ip.substr(0, i);
             }
         }
-        return hprose.Client.create("ws://" + ip + "/ws/",
-				["login", "register",
-    "getvar", "act", "setdata", "set", "get", "del", "hmclear", "hset", "hget", "hlen", "hkeys",
-     "hgetall", "hmset", "hmget", "exit", "restart", "lpush", "lpop", "rpush", "rpop", "lrange", "zadd", "zrange",
-     "sadd", "scard", "sclear", "sdiff", "sinter", "smclear", "smembers", "srem", "sunion",
-     "sendmsg", "readmsg", "pullmsg", "invite", "accept", "test", "veni", "sethostip", "proxyget",
-     "createinvcode", "getinvcodeinfo", "updateinvcode", "deleteinvcode",
-     "setinvtemplate", "getinvtemplate", "getappdownloadkey", "getresbyname"]);
+        if(navigator.userAgent.indexOf("Firefox")!=-1){
+        	
+        	 return hprose.Client.create("http://" + ip + "/webapi/",
+       				["login", "register",
+           "getvar", "act", "setdata", "set", "get", "del", "hmclear", "hset", "hget", "hlen", "hkeys",
+            "hgetall", "hmset", "hmget", "exit", "restart", "lpush", "lpop", "rpush", "rpop", "lrange", "zadd", "zrange",
+            "sadd", "scard", "sclear", "sdiff", "sinter", "smclear", "smembers", "srem", "sunion",
+            "sendmsg", "readmsg", "pullmsg", "invite", "accept", "test", "veni", "sethostip", "proxyget",
+            "createinvcode", "getinvcodeinfo", "updateinvcode", "deleteinvcode",
+            "setinvtemplate", "getinvtemplate", "getappdownloadkey", "getresbyname"]);        	 
+        	
+        }else{
+        	
+        	return hprose.Client.create("ws://" + ip + "/ws/",
+     				["login", "register",
+         "getvar", "act", "setdata", "set", "get", "del", "hmclear", "hset", "hget", "hlen", "hkeys",
+          "hgetall", "hmset", "hmget", "exit", "restart", "lpush", "lpop", "rpush", "rpop", "lrange", "zadd", "zrange",
+          "sadd", "scard", "sclear", "sdiff", "sinter", "smclear", "smembers", "srem", "sunion",
+          "sendmsg", "readmsg", "pullmsg", "invite", "accept", "test", "veni", "sethostip", "proxyget",
+          "createinvcode", "getinvcodeinfo", "updateinvcode", "deleteinvcode",
+          "setinvtemplate", "getinvtemplate", "getappdownloadkey", "getresbyname"]);	 
+        	
+        }
     };
 } ());
 
-
-function debug(){};
-var alias_consolelog = function() { return console.log.apply(console, arguments); };
+function debug() {};
+var alias_consolelog = function() {
+    return console.log.apply(console, arguments);
+};
 
 function setLog(isShow) {
-debug.error = alias_consolelog;
-debug.log = alias_consolelog;
-debug.info = alias_consolelog;
-debug.warn = alias_consolelog;
-
-/*
     if (isShow) {
-        window.debug = {
-            log: window.console.log.bind(window.console),
-            error: window.console.error.bind(window.console),
-            info: window.console.info.bind(window.console),
-            warn: window.console.warn.bind(window.console)
-        };
+        debug.error = alias_consolelog;
+        debug.log = alias_consolelog;
+        debug.info = alias_consolelog;
+        debug.warn = alias_consolelog;
     } else {
-        var __no_op = function () { };
-        window.debug = {
-            log: __no_op,
-            error: __no_op,
-            warn: __no_op,
-            info: __no_op
-        }
-    }*/
+        var __no_op = function() {};
+        debug.error = alias_consolelog;
+        debug.log = __no_op;
+        debug.info = __no_op;
+        debug.warn = __no_op;
+    }
 };
 
 function processError(name, err) {
@@ -53,14 +59,14 @@ function processError(name, err) {
 }
 function PE(name) {
     pe = G.ayFE[name];
-    ////debug.log("PE:", name, "f:", pe);
+    //debug.log("PE:", name, "f:", pe);
     if (pe) {
-        //debug.log("PE: seted");
+        debug.log("PE: seted");
         return pe;
     }
-    ////debug.log("pe return");
+    //debug.log("pe return");
     return function (e) {
-        //debug.log("PE:default mark");
+        debug.log("PE:default mark");
         if (G.ayFE[name]) {
             return G.ayFE[name](e);
         }
@@ -74,14 +80,14 @@ function errReply() {
         err = G.ayErr[i];
         if (err != null && f != null) {
             G.ayErr[i] = null;
-            //debug.log("errReply err:", err);
+            debug.log("errReply err:", err);
             f(err);
         }
     }
 }
 function LeitherErr(err) {
     str = err.toString();
-    //debug.log(str);
+    debug.log(str);
     this.ID = "-1";
     this.Info = str;
     if (str.indexOf("Error: ") != 0) {
@@ -93,10 +99,10 @@ function LeitherErr(err) {
         this.ID = str.substring(0, id);
         this.Info = str.substring(id + 1);
     }
-    //debug.log("id=[", this.ID, "] info=[", this.Info, "]");
+    debug.log("id=[", this.ID, "] info=[", this.Info, "]");
 }
 function setErrFunc(name, f) {
-    //debug.log("setErrFunc ", name, "f:", f);
+    debug.log("setErrFunc ", name, "f:", f);
     G.ayFE[name] = f;
 }
 
@@ -134,7 +140,7 @@ function setMain() {
     if (typeof(main) == "undefined"){
         return;
     }
-    //debug.log("main function ok run it")
+    debug.log("main function ok run it")
     G.Main = main;
 
     if (LeitherIsOK() && G.sid != null) {
@@ -142,70 +148,70 @@ function setMain() {
         RunInitFunc();
         main();
     } else {
-        //debug.log("errReply()");
+        debug.log("errReply()");
         errReply();
     }
 }
 function readCacheVar(key, def) {
-    ////debug.log("readCacheVar k:", key, "def:", def)
+    //debug.log("readCacheVar k:", key, "def:", def)	
     v = localStorage[key];
     if (v) {
-        ////debug.log("readCacheVar v:", v)
+        //debug.log("readCacheVar v:", v)
         return JSON.parse(v);
     }
-    ////debug.log("readCacheVar def:", def)
+    //debug.log("readCacheVar def:", def)
     if (typeof(def) != "undefined"){
         localStorage[key] = JSON.stringify(def);
     }
     return def;
 }
 function saveLoginInfo(uid, ppt) {
-    //debug.log("saveLoginInfo uid:", uid, "ppt:", ppt);
+    debug.log("saveLoginInfo uid:", uid, "ppt:", ppt);
     if (typeof (uid) != "string") {
         uid = "";
     }
     if (typeof (ppt) != "string") {
         ppt = "";
     }
-    localStorage[window.location.pathname + "/" + G.AppBid + "/uid"] = JSON.stringify(uid);
+   // localStorage[window.location.pathname + "/" + G.AppBid + "/uid"] = JSON.stringify(uid);
     localStorage[window.location.pathname + "/" + G.AppBid + "/ppt"] = JSON.stringify(ppt);
-    //debug.log("saveLoginInfo end uid:", localStorage[window.location.pathname + "/" + G.AppBid + "/uid"]);
+    debug.log("saveLoginInfo end uid:", localStorage[window.location.pathname + "/" + G.AppBid + "/uid"]);
     G.uid = uid;
     G.userppt = ppt;
 }
-function InitCfg(I) {
-    //debug.log("InitCfg");
+function InitCfg(I){
+    debug.log("InitCfg");
     G.Local = I.Local;
     G.SystemBid = I.SystemBid;
     G.AppBid = I.AppBid;
     G.IPList = readCacheVar(G.AppBid + "/iplist", I.IPList);
-    ////debug.log(G.IPList)
+    //debug.log(G.IPList)
     G.userppt = readCacheVar(window.location.pathname + "/" + G.AppBid + "/ppt", I.userppt);
     G.AppName = readCacheVar(G.AppBid + "/appname", I.AppName);
     G.uid = readCacheVar(window.location.pathname + "/" + G.AppBid  + "/uid", I.userid);
-    ////debug.log("InitCfg end， uid=", G.uid)
+    //debug.log("InitCfg end， uid=", G.uid)
     return true;
 }
 function InitDb(){
-    //debug.log("InitDb");
+    debug.log("InitDb");
     var future = new hprose.Future();
     var version = version || 2;
     var request = window.indexedDB.open("LeitherApi", version);
     G.ApptbName = G.appBid + "_" + G.AppName;
-    //debug.log(G.ApptbName);
+    debug.log(G.ApptbName);
     request.onerror = function (e) {
         debug.error(e.currentTarget.error.message);
          future.reject(e);
     };
     request.onsuccess = function (e) {
-        //debug.log("InitDb ok");
+        debug.log("InitDb ok");
         var db = e.target.result;
         G.LeitherDb = db;
         future.resolve(db);
     };
     request.onupgradeneeded = function (e) {
         var db = e.target.result;
-        ////debug.log(db.objectStoreNames)
+        //debug.log(db.objectStoreNames)
         if (!db.objectStoreNames.contains('res')) {
             var store = db.createObjectStore('res', { keyPath: "id" });
         }
@@ -213,7 +219,7 @@ function InitDb(){
             db.deleteObjectStore(G.ApptbName); 
             //var store = db.createObjectStore(G.ApptbName, { keyPath: "id" }); //必须放对象
         }
-        //debug.log('DB version changed to ' + version);
+        debug.log('DB version changed to ' + version);
     };
     return future;
 }
@@ -222,14 +228,14 @@ function GetDbData(key){
     var tr = G.LeitherDb.transaction("res", 'readwrite');
     var store = tr.objectStore("res");
     var future = new hprose.Future();
-    //debug.log('getdbdata ')
+    debug.log('getdbdata ')
     request = store.get(key)
     request.onerror = function (e) {
         future.reject(e)
     };
     request.onsuccess = function (e) {
         future.resolve(e.target.result)
-        //debug.log('getdbdata2 ', e.target.result)
+        debug.log('getdbdata2 ', e.target.result)
     };
     return future;
 }
@@ -237,21 +243,22 @@ function GetDbData(key){
 function SetDbData(value){
     var tr = G.LeitherDb.transaction("res", 'readwrite');
     var store = tr.objectStore("res");
-    //debug.log('setdbdata ')
+    debug.log('setdbdata ')
     var future = new hprose.Future();
     request = store.add(value);
     request.onerror = function (e) {
-        //debug.log('setdbdata err', e)
+        debug.log('setdbdata err', e)
         future.reject(e)
     };
     request.onsuccess = function (e) {
         future.resolve(e.target.result)
-        //debug.log('getdata2 ', e.target.result)
+        debug.log('getdata2 ', e.target.result)
     };
     return future;
 }
 
 function RunApp(I, ipnum) {
+	//debugger;
     setLog(I.Log);
 	G.I=I;
     G.appBid = I.AppBid;
@@ -262,8 +269,8 @@ function RunApp(I, ipnum) {
         G.AppVer = "last";
     }
 
-    //debug.log("RunApp");
-    ////debug.log("LeitherIsOK:", LeitherIsOK())
+    debug.log("RunApp");
+    //debug.log("LeitherIsOK:", LeitherIsOK())
     if (ipnum == 0 && !InitCfg(I)) {    //读取配置
         return;
     }
@@ -273,11 +280,11 @@ function RunApp(I, ipnum) {
         return
     }
     ip = G.IPList[ipnum];
-    ////debug.log("ip:", G.IPList)
+    //debug.log("ip:", G.IPList)
     RunAppByIP(ip);
 }
 function processManifest(data) {
-    //debug.log("hget manifest ", data);
+    debug.log("hget manifest ", data);
     m = JSON.parse(data);
     getList = function (res, ver) {
         if (ver == "last" || ver == "release") {
@@ -285,56 +292,56 @@ function processManifest(data) {
         }
         return res.ResFile[ver];
     }
-    ////debug.log(m[G.AppVer])
+    //debug.log(m[G.AppVer])
     list = getList(m, G.AppVer); //m.ResFile[m.LastVer]
     getFs = function (i) {
-        //debug.log("getFs", i);
+        debug.log("getFs", i);
         fs = [];
         for (; i < list.length; i++) {
             Key = list[i];
-            //debug.log("lookup list", Key);
+            debug.log("lookup list", Key);
             if (Key == "") {
                 i++;
                 break;
             }
-            //debug.log("push");
+            debug.log("push");
             fs.push(LoadJs(Key)
             /*
             (function (key) {
                 var future = new hprose.Future();
-                //debug.log("future", key);
+                debug.log("future", key);
                 LoadJsByKey(G.AppBid, key, function () {
-                    //debug.log("res load ", key);
+                    debug.log("res load ", key);
                     future.resolve(key);
                 }, function () {
-                    //debug.log("reject ", key);
+                    debug.log("reject ", key);
                     future.reject(key);
                 })
                 return future;
             })(Key)*/
             );
-            //debug.log("push end");
+            debug.log("push end");
         }
-        //debug.log("all");
+        debug.log("all");
         var Future = hprose.Future;
         Future.all(fs).then(function (values) {
-            //debug.log("all promise", values);
+            debug.log("all promise", values);
             setMain();
             if (i < list.length) {
                 getFs(i);
             }
         }, function (e) {
-            //debug.log(e);
+            debug.log(e);
         });
-        //debug.log("all end");
+        debug.log("all end");
     }
     getFs(0);
 }
 function InitApp(stub) {
-    //debug.log("InitApp");
+    debug.log("InitApp");
     var future = new hprose.Future();
     if (G.Local) {
-        //debug.log("use local file");
+        debug.log("use local file");
         setMain();
         future.resolve();
         return future;
@@ -342,16 +349,16 @@ function InitApp(stub) {
 
     GetDbData(G.AppName)
     .then(function(manifest){
-        //debug.log('getdbdata data = ', manifest)
+        debug.log('getdbdata data = ', manifest)
         if (manifest) {
-            //debug.log("manifest local");
+            debug.log("manifest local");
             processManifest(manifest.data);
             future.resolve();
          } else {
-            //debug.log("manifest hget", G.AppBid, ",appname:", G.AppName);
+            debug.log("manifest hget", G.AppBid, ",appname:", G.AppName);
             stub.hget("", G.AppBid, "applist", G.AppName)
             .then(function (data) {
-                 //debug.log("manifest hget ok");
+                 debug.log("manifest hget ok");
                 SetDbData({
                     id:G.AppName,
                     data: data,
@@ -366,14 +373,14 @@ function InitApp(stub) {
     })/*
     manifest = localStorage[G.AppName];
     if (manifest) {
-        //debug.log("manifest local");
+        debug.log("manifest local");
         processManifest(manifest);
         future.resolve();
     } else {
-        //debug.log("manifest hget", G.AppBid, ",appname:", G.AppName);
+        debug.log("manifest hget", G.AppBid, ",appname:", G.AppName);
         stub.hget("", G.AppBid, "applist", G.AppName)
         .then(function (data) {
-            //debug.log("manifest hget ok");
+            debug.log("manifest hget ok");
             localStorage[G.AppName] = data;
             processManifest(data);
             future.resolve();
@@ -392,36 +399,41 @@ function RunAppByIP(ip) {
 	G.api = api(ip);
     InitDb()
     .then(function(db){
-	    //debug.log("hprose ready", db)
+	    debug.log("hprose ready", db)
         G.api.ready(function (stub) {
-            //debug.log("hprose ready ok")
+            debug.log("hprose ready ok")
 	        //应该先load资源再login
-	        //debug.log("G.uid=", G.uid)
+	        debug.log("G.uid=", G.uid)
 	        InitApp(stub)
             .then(function () {
-                //debug.log("login")
+                debug.log("login")
                 errfunc = PE("login");
                 stub.login(G.uid, G.userppt)//如果没有用户信息，应该进入代码的登录或初始化函数
                 .then(function (reply) {
-                //debug.log("login ok")
-                G.sid = reply.sid;
-                G.user = reply.user;
-            G.bid = reply.user.id;//for weibo
-            G.leClient = G.api;//for weibo
-            G.swarm = reply.swarm;
-            //debug.log("LeitherIsOK:", LeitherIsOK());
-            //debug.log("login ok sid=", reply.sid);
-            //debug.log("user= ", reply.user);
-            //debug.log("swarm=", reply.swarm);
-            //debug.log("appName=", G.AppName);
+                debug.log("login ok")
+                G.sid = reply.sid;				
+				G.user = reply.user;	
+				//debugger;
+				if(reply.user!=null){
+					G.bid = reply.user.id;//for weibo	
+				}else{
+					G.bid=G.uid;
+				}																	
+				G.leClient = G.api;//for weibo
+				G.swarm = reply.swarm;	
+            debug.log("LeitherIsOK:", LeitherIsOK());
+            debug.log("login ok sid=", reply.sid);
+            debug.log("user= ", reply.user);
+            debug.log("swarm=", reply.swarm);
+            debug.log("appName=", G.AppName);
             setMain();
             //同步检查最新版的hprose
             stub.getresbyname(G.sid, G.SystemBid, "LeitherApi", G.AppVer)
             .then(function (data) {
                 var r = new FileReader();
                 r.onload = function (e) {
-                    //debug.log("leitherApi re get ok");
-   //                             SetDbData({
+                    debug.log("leitherApi re get ok");
+   //                 SetDbData({
      //           id:"leitherApi",
        //         data:e.target.result
          //      })
@@ -431,7 +443,7 @@ function RunAppByIP(ip) {
             })
             stub.hget(G.sid, G.AppBid, "applist", G.AppName)
             .then(function (data) {
-                //debug.log("manifest re hget ok");
+                debug.log("manifest re hget ok");
                 SetDbData({
                     id:G.AppName,
                     data: data,
@@ -445,7 +457,7 @@ function RunAppByIP(ip) {
 }
 function LoadJs(key){    
     var future = new hprose.Future();
-    //debug.log("load js ", key);
+    debug.log("load js ", key);
     var script = document.createElement("script");
     script.type = "text/javascript";
     GetDbData(key).then(function (d) {
@@ -454,23 +466,23 @@ function LoadJs(key){
             document.getElementsByTagName("head")[0].appendChild(script);
             future.resolve(key);
         } else {
-            //debug.log("check leither");
+            debug.log("check leither");
             if ((typeof (LeitherIsOK) == "function") && LeitherIsOK()) {
-                //debug.log("check leither ok");
+                debug.log("check leither ok");
                 ff = function (reason) {
                     debug.error(reason);
                     future.reject(key);
             };
             G.api.ready(function (stub) {
-                //debug.log(" G.api.ready");
+                debug.log(" G.api.ready");
                 stub.get("", G.AppBid, key, function (data) {
-                    //debug.log("get ok  ", data);
+                    debug.log("get ok  ", data);
                     if (data) {
-                        //debug.log(" if (data) {");
+                        debug.log(" if (data) {");
                         var r = new FileReader();
                         r.onload = function (e) {
                             //localStorage[key] = e.target.result;
-                            //debug.log(" SetDbData");
+                            debug.log(" SetDbData");
                             SetDbData({
                                 id:key,
                                 data: e.target.result,
@@ -499,17 +511,17 @@ function LoadJs(key){
         document.getElementsByTagName("head")[0].appendChild(script);
         future.resolve(key);
     } else {
-        //debug.log("check leither");
+        debug.log("check leither");
         if ((typeof (LeitherIsOK) == "function") && LeitherIsOK()) {
-            //debug.log("check leither ok");
+            debug.log("check leither ok");
             ff = function (reason) {
                 debug.error(reason);
                 future.reject(key);
             };
             G.api.ready(function (stub) {
-             ////debug.log(" G.api.ready");
+             //debug.log(" G.api.ready");
                 stub.get("", G.AppBid, key, function (data) {
-               // //debug.log("get ok  ", key);
+               // debug.log("get ok  ", key);
                     if (data) {
                         var r = new FileReader();
                         r.onload = function (e) {
